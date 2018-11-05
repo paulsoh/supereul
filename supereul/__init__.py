@@ -18,7 +18,7 @@ class Supereul():
     ):
         """
         Hyperparameters
-        batch_size = 
+        batch_size =
         """
         self.graph = graph
         self.operations_and_feed_values_for_training = operations_and_feed_values_for_training
@@ -45,7 +45,6 @@ class Supereul():
         log_every_n_times = self.config.get('log_every_n_times', 10)
 
         self.sess.run(self.global_variables_initializer())
-        
         print("...global variables initialized...")
         print("Hyperparameters used for current session")
         self._print_hyperparameters()
@@ -105,7 +104,7 @@ class Supereul():
         assert len(placeholders) == len(feed_values), "Feed values and Placeholders do not have the same length!"
         return {
             key: value for
-            key, value in 
+            key, value in
             zip(placeholders, feed_values)
         }
 
@@ -116,13 +115,13 @@ class Supereul():
         ops = tf.get_default_graph().get_operations()
         tensors = [
             o.values()[0]
-            for o in ops 
+            for o in ops
             if len(o.values()) != 0
         ]
 
         _placeholders = [
                 op.name for op in
-                self.graph.graph.get_operations() 
+                self.graph.graph.get_operations()
                 if op.type == "Placeholder"
         ]
 
