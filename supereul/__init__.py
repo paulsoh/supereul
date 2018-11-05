@@ -3,7 +3,7 @@ import tensorflow as tf
 default_hyperparameters = {
     "batch_size": 32,
     "optimizer": "adam",
-    "epochs": 10000,
+    "epochs": 10,
     "learning_rate": 0.002,
 }
 
@@ -16,6 +16,9 @@ class Supereul():
         self.graph = graph
         self.operation = operation
         self.feed_values = feed_values
+
+        # Parse placeholder tensors
+        self.placeholders = self._parse_placeholder_tensors()
 
         # For running sessions
         self.sess = tf.Session()
@@ -39,32 +42,51 @@ class Supereul():
     def _run_train(self, log_level="verbose"):
         if not self._check_feed_values_validity():
             print("Failed, check validity for feed_values")
-        print("Running Training Step")
+        print("=== Fetching placeholder tensors from graph ===")
 
-        _placeholders = [
-                op for op in
-                self.graph.graph.get_operations() 
-                if op.type == "Placeholder"
-        ]
-
-        _placeholder_names = [
-            placeholder.name
-            for placeholder
-            in _placeholders
-        ]
-
-        from IPython import embed; embed()
-
-        _feed_dict = {
-            _placeholders[0]: self.feed_values[0],
-            _placeholders[1]: self.feed_values[1]
-        }
+        _feed_dict = self._generate_feed_dict(
+            self.placeholders,
+            self.feed_values
+        )
 
         _results = self.sess.run([
             self.graph
         ], feed_dict=_feed_dict)
         print("Running complete")
         print(_results)
+
+    def _generate_feed_dict(self, placeholders, feed_values):
+        assert len(placeholders) == len(feed_values), "Feed values and Placeholders do not have the same length!"
+        return {
+            key: value for
+            key, value in 
+            zip(placeholders, feed_values)
+        }
+
+    def _parse_placeholder_tensors(self):
+        # Get tensors from self.graph
+        # Get placeholder name from self.graph
+
+        ops = tf.get_default_graph().get_operations()
+        tensors = [
+            o.values()[0]
+            for o in ops 
+            if len(o.values()) != 0
+        ]
+
+        _placeholders = [
+                op.name for op in
+                self.graph.graph.get_operations() 
+                if op.type == "Placeholder"
+        ]
+
+        _placeholder_tensors = []
+        for name in _placeholders:
+            for t in tensors:
+                if name in t.name:
+                    _placeholder_tensors.append(t)
+
+        return _placeholder_tensors
 
     def _run_test(self):
         pass

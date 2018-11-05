@@ -11,24 +11,24 @@ hyperparameters = {
     'batch_size': 32,
 }
 
-def build_graph():
-    with tf.variable_scope("graph", reuse=tf.AUTO_REUSE):
+def build_model():
+    with tf.variable_scope("model", reuse=tf.AUTO_REUSE):
+        # Placeholders
         input_ph = tf.placeholder('float32', shape=(None, 8, 8, 1), name="x")
         output_ph = tf.placeholder('float32', shape=(None, 1), name="y")
 
-        graph = conv2d(input_ph, 8, [2, 2], stride=1, padding="same")
+        output = conv2d(input_ph, 8, [2, 2], stride=1, padding="same")
+        output = flatten(output)
+        output = fully_connected(output, 1)
 
-        graph = flatten(graph)
-        graph = fully_connected(graph, 1)
-
-        return graph
+        return output
 
 tf.reset_default_graph()
 
-graph = build_graph()
+output = build_model()
 
 s = Supereul(
-    graph, # Tensor graph
+    output, # Tensor graph
     'operation', # Operation
     [x, y], # Feed dict
     # Hyperparameter
