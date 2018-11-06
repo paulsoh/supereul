@@ -1,12 +1,12 @@
 # Supereul
 Minimalistic tensorflow session wrapper for Tensorflow ML experiments
 
-# Work in progress, TODOS
-* Implement file outputs for train logs and resulting trained model
-* Implement Supereul().update() method so that you can change operations to run
-* Implement cross validation cycles
+# TODOS - listed in prioritized order
+* [ ] Implement file outputs for train logs and resulting trained model
+* [ ] Implement Supereul().update() method so that you can change operations to run
+* [ ] Implement cross validation cycles
   * Currently only train and test
-* Implement early stop training
+* [ ] Implement early stop training
 
 # Requirements
 
@@ -40,9 +40,21 @@ operations_and_feed_values_for_training = {
     "feed_values": [x_tr, y_tr]
 }
 
-operations_and_feed_values_for_training = {
+operations_and_feed_values_for_testing = {
     "operations": [loss],
     "feed_values": [x_te, y_te]
+}
+
+configs = {
+    "test_every_n_times": 10,
+    "log_every_n_times": 10,
+    "save_model": True,
+    "save_training_log": True
+}
+
+hyperparameters = {
+    "batch_size": 32 ,
+    "epochs": 100,
 }
 
 for i in range(10):
